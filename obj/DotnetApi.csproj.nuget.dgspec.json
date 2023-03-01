@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/yuraabharian/Desktop/C# Course/DotnetApi/DotnetApi.csproj": {}
+    "/Users/yuraabharian/Desktop/C# Course/DotnetApi.csproj": {}
   },
   "projects": {
-    "/Users/yuraabharian/Desktop/C# Course/DotnetApi/DotnetApi.csproj": {
+    "/Users/yuraabharian/Desktop/C# Course/DotnetApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/yuraabharian/Desktop/C# Course/DotnetApi/DotnetApi.csproj",
+        "projectUniqueName": "/Users/yuraabharian/Desktop/C# Course/DotnetApi.csproj",
         "projectName": "DotnetApi",
-        "projectPath": "/Users/yuraabharian/Desktop/C# Course/DotnetApi/DotnetApi.csproj",
+        "projectPath": "/Users/yuraabharian/Desktop/C# Course/DotnetApi.csproj",
         "packagesPath": "/Users/yuraabharian/.nuget/packages/",
-        "outputPath": "/Users/yuraabharian/Desktop/C# Course/DotnetApi/obj/",
+        "outputPath": "/Users/yuraabharian/Desktop/C# Course/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/yuraabharian/.nuget/NuGet/NuGet.Config"
