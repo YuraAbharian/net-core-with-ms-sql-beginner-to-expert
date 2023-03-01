@@ -1,8 +1,7 @@
-namespace DotnetApi.Models
+namespace DotnetApi.Dtos
 {
-    public partial class User
+    public partial class UserToAddDto
     {
-        public int UserId {get; set;}
         public string FirstName {get; set;} = "";
         public string LastName {get; set;} = "";
         public string Email {get; set;} = "";

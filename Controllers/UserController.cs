@@ -1,3 +1,6 @@
+using DotnetApi.Data;
+using DotnetApi.Dtos;
+using DotnetApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetApi.Controllers;
@@ -47,7 +50,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("AddUser")]
-    public IActionResult AddUser(User user)
+    public IActionResult AddUser(UserToAddDto user)
     {
                 string query = $@"
             INSERT INTO TutorialAppSchema.Users (
