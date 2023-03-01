@@ -12,18 +12,59 @@ public class UserController : ControllerBase
         _dapper = new DataContextDapper(config);
     }
 
-    [HttpGet("GetTime")]
-    public DateTime GetTime()
+    [HttpGet("GetUsers")]
+    public IEnumerable<User> GetUsers()
     {
-        return _dapper.LoadSingleData<DateTime>("SELECT GETDATE()");
+        return _dapper.LoadData<User>("SELECT * FROM TutorialAppSchema.Users");
     }
 
-    [HttpGet("GetUsers")]
-    public IEnumerable<string> GetUsers()
+    [HttpGet("GetSingleUser/{userId}")]
+    public User GetSingleUser(int userId)
     {
-        return new string[]
+        return _dapper.LoadSingleData<User>($"SELECT * FROM TutorialAppSchema.Users AS U WHERE U.UserId={userId}");
+    }
+
+    [HttpPut("EditUser")]
+    public IActionResult EditUser(User user)
+    {
+        string query = $@"
+            UPDATE TutorialAppSchema.Users
+            SET [FirstName] = '{user.FirstName}',
+                [LastName] = '{user.LastName}',
+                [Email] = '{user.Email}',
+                [Gender] = '{user.Gender}',
+                [Active] = '{user.Active}'
+            WHERE UserId = {user.UserId}
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
         {
-            "User1", "User2"
-        };
+            return Ok();
+        }
+        throw new Exception("Failed to Update User");
+    }
+
+    [HttpPost("AddUser")]
+    public IActionResult AddUser(User user)
+    {
+                string query = $@"
+            INSERT INTO TutorialAppSchema.Users (
+                [FirstName],
+                [LastName],
+                [Email],
+                [Gender],
+                [Active]
+           ) VALUES ('{user.FirstName}', '{user.LastName}', '{user.Email}', '{user.Gender}', '{user.Active}')
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Add User");
     }
 }
