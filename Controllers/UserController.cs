@@ -70,4 +70,18 @@ public class UserController : ControllerBase
         }
         throw new Exception("Failed to Add User");
     }
+
+    [HttpDelete("DeleteUser/{userId}")]
+    public IActionResult DeleteUser(int userId)
+    {
+        string query = $"DELETE FROM TutorialAppSchema.Users WHERE UserId = '{userId}'";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Delete User");
+    }
 }
