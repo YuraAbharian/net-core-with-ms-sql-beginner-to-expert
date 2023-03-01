@@ -6,12 +6,24 @@ namespace DotnetApi.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    [HttpGet("GetUsers/{testValue}")]
-    public IEnumerable<string> GetUsers(string testValue)
+    DataContextDapper _dapper;
+    public UserController(IConfiguration config)
+    {
+        _dapper = new DataContextDapper(config);
+    }
+
+    [HttpGet("GetTime")]
+    public DateTime GetTime()
+    {
+        return _dapper.LoadSingleData<DateTime>("SELECT GETDATE()");
+    }
+
+    [HttpGet("GetUsers")]
+    public IEnumerable<string> GetUsers()
     {
         return new string[]
         {
-            "User1", "User2", testValue, "New User"
+            "User1", "User2"
         };
     }
 }

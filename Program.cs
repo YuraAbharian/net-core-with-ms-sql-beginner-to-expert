@@ -38,9 +38,8 @@ if (app.Environment.IsDevelopment())
 else if (app.Environment.IsProduction())
 {
     app.UseCors("ProdCors");
+    app.UseHttpsRedirection();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
