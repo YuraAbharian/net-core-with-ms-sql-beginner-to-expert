@@ -52,7 +52,7 @@ public class UserController : ControllerBase
     [HttpPost("AddUser")]
     public IActionResult AddUser(UserToAddDto user)
     {
-                string query = $@"
+        string query = $@"
             INSERT INTO TutorialAppSchema.Users (
                 [FirstName],
                 [LastName],
@@ -84,4 +84,136 @@ public class UserController : ControllerBase
         }
         throw new Exception("Failed to Delete User");
     }
+
+    // UserSalary
+    [HttpGet("GetUsersSalary")]
+    public IEnumerable<UserSalary> GetUsersSalary()
+    {
+        return _dapper.LoadData<UserSalary>("SELECT * FROM TutorialAppSchema.UserSalary");
+    }
+
+    [HttpGet("GetSingleUserSalary/{userId}")]
+    public UserSalary GetSingleUserSalary(int userId)
+    {
+        return _dapper.LoadSingleData<UserSalary>($"SELECT * FROM TutorialAppSchema.UserSalary AS U WHERE U.UserId={userId}");
+    }
+
+    [HttpPut("EditUserSalary")]
+    public IActionResult EditUserSalary(UserSalaryToAddDto user)
+    {
+        string query = $@"
+            UPDATE TutorialAppSchema.UserSalary
+            SET [Salary] = '{user.Salary}'
+            WHERE UserId = {user.UserId}
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Update UserSalary");
+    }
+
+    [HttpPost("AddUserSalary")]
+    public IActionResult AddUserSalary(UserSalaryToAddDto user)
+    {
+        string query = $@"
+            INSERT INTO TutorialAppSchema.UserSalary (
+                [Salary],
+                [UserId]
+           ) VALUES ('{user.Salary}', '{user.UserId}')
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Add UserSalary");
+    }
+
+    [HttpDelete("DeleteUserSalary/{userId}")]
+    public IActionResult DeleteUserSalary(int userId)
+    {
+        string query = $"DELETE FROM TutorialAppSchema.UserSalary WHERE UserId = '{userId}'";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Delete UserSalary");
+    }
+
+    // UserJobInfo
+    [HttpGet("GetUserJobInfo")]
+    public IEnumerable<UserJobInfo> GetUserJobInfo()
+    {
+        return _dapper.LoadData<UserJobInfo>("SELECT * FROM TutorialAppSchema.UserJobInfo");
+    }
+
+    [HttpGet("GetSingleUserJobInfo/{userId}")]
+    public UserJobInfo GetSingleUserJobInfo(int userId)
+    {
+        return _dapper.LoadSingleData<UserJobInfo>($"SELECT * FROM TutorialAppSchema.UserJobInfo AS U WHERE U.UserId={userId}");
+    }
+
+    [HttpPut("EditUserJobInfo")]
+    public IActionResult EditUserJobInfo(UserJobInfo user)
+    {
+        string query = $@"
+            UPDATE TutorialAppSchema.UserJobInfo
+            SET [Department] = '{user.Department}',
+                [JobTitle] = '{user.JobTitle}'
+            WHERE UserId = {user.UserId}
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Update UserJobInfo");
+    }
+
+    [HttpPost("AddUserJobInfo")]
+    public IActionResult AddUserJobInfo(UserJobInfo user)
+    {
+        string query = $@"
+            INSERT INTO TutorialAppSchema.UserJobInfo (
+                [UserId],
+                [Department],
+                [JobTitle]
+           ) VALUES ('{user.UserId}','{user.Department}', '{user.JobTitle}')
+        ";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Add UserJobInfo");
+    }
+
+    [HttpDelete("DeleteUserJobInfo/{userId}")]
+    public IActionResult DeleteUserJobInfo(int userId)
+    {
+        string query = $"DELETE FROM TutorialAppSchema.UserJobInfo WHERE UserId = '{userId}'";
+
+        bool result = _dapper.ExecuteSql(query);
+
+        if (result)
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Delete UserJobInfo");
+    }
+
+
 }
