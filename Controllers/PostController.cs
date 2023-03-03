@@ -106,6 +106,18 @@ namespace DotnetApi.Controllers
             return BadRequest("Failed to delete post");
         }
 
+        [HttpGet("SearchPost/{query}")]
+        public IEnumerable<Post> SearchPost(string query)
+        {
+            string searchPostSql = $@"
+                SELECT * FROM TutorialAppSchema.Posts
+                WHERE (PostTitle LIKE '%{query}%' OR PostContent LIKE '%{query}%') 
+                AND UserId = {GetUserIdFromToken()}
+            ";
+
+            return _dapper.LoadData<Post>(searchPostSql);
+        }
+
 
         private string? GetUserIdFromToken()
         {
