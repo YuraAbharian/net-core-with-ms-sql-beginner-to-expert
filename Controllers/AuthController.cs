@@ -1,3 +1,4 @@
+using System.Net;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase
@@ -106,6 +109,16 @@ public class AuthController : ControllerBase
         return Ok(new Dictionary<string, string> {
             {"token", CreateToken(user.UserId)}
         });
+    }
+
+    [HttpGet("RefreshToken")]
+    public string RefreshToken()
+    {
+        string userSql = $"SELECT UserId FROM TutorialAppSchema.Users WHERE UserId = '{User.FindFirst("UserId")?.Value}'";
+
+        int userId = _dapper.LoadSingleData<int>(userSql);
+
+        return CreateToken(userId);
     }
 
     private byte[] HashPassword(string password, byte[] passwordSalt)
