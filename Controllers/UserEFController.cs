@@ -11,9 +11,11 @@ namespace DotnetApi.Controllers;
 public class UserEFController : ControllerBase
 {
     private readonly DataContextEF _entityFramework;
-    private readonly Mapper _mapper;
-    public UserEFController(IConfiguration config)
+    private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
+    public UserEFController(IConfiguration config, IUserRepository userRepository)
     {
+        _userRepository = userRepository;
         _entityFramework = new DataContextEF(config);
         _mapper = new Mapper(new MapperConfiguration((cfg) => {
             cfg.CreateMap<UserToAddDto, User>();
@@ -58,9 +60,7 @@ public class UserEFController : ControllerBase
             DbUser.Active = user.Active;
             DbUser.Email = user.Email;
 
-            int result = _entityFramework.SaveChanges();
-
-            if (result > 0)
+            if (_userRepository.SaveChanges())
             {
                 return Ok();
             }
@@ -75,11 +75,9 @@ public class UserEFController : ControllerBase
     {
         User? DbUser = _mapper.Map<User>(user);
 
-        _entityFramework.Add<User>(DbUser);
+        _userRepository.AddEntity<User>(DbUser);
 
-        int result = _entityFramework.SaveChanges();
-
-        if (result > 0)
+        if (_userRepository.SaveChanges())
         {
             return Ok();
         }
@@ -96,11 +94,9 @@ public class UserEFController : ControllerBase
 
         if (DbUser != null)
         {
-            _entityFramework.Users.Remove(DbUser);
+            _userRepository.RemoveEntity<User>(DbUser);
 
-            int result = _entityFramework.SaveChanges();
-
-            if (result > 0)
+            if (_userRepository.SaveChanges())
             {
                 return Ok();
             }
