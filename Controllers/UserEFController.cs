@@ -105,4 +105,156 @@ public class UserEFController : ControllerBase
 
         throw new Exception($"Failed get user by id'${userId}'");
     }
+
+    // UserJobInfo
+    [HttpGet("GetSingleUserJobInfo/{userId}")]
+    public UserJobInfo GetSingleUserJobInfo(int userId)
+        {
+        UserJobInfo? user = _entityFramework
+        .UserJobInfo
+        .Where(u => u.UserId == userId)
+        .FirstOrDefault<UserJobInfo>();
+
+        if (user != null)
+        {
+            return user;
+        }
+
+        throw new Exception($"Failed get user job info by id'${userId}'");
+    }
+
+    [HttpPut("EditUserJobInfo")]
+    public IActionResult EditUserJobInfo(UserJobInfo user)
+    {
+        UserJobInfo? DbUser = _entityFramework
+           .UserJobInfo
+           .Where(u => u.UserId == user.UserId)
+           .FirstOrDefault<UserJobInfo>();
+
+        if (DbUser != null)
+        {
+            DbUser.Department = user.Department;
+            DbUser.JobTitle = user.JobTitle;
+
+            if (_userRepository.SaveChanges())
+            {
+                return Ok();
+            }
+            throw new Exception("Failed to Update UserJobInfo");
+        }
+
+        throw new Exception($"Failed get user job info by id'${user.UserId}'");
+    }
+
+    [HttpPost("AddUserJobInfo")]
+    public IActionResult AddUserJobInfo(UserToAddDto user)
+    {
+        User? DbUser = _mapper.Map<User>(user);
+
+        _userRepository.AddEntity<User>(DbUser);
+
+        if (_userRepository.SaveChanges())
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Add UserJobInfo");
+    }
+
+    [HttpDelete("DeleteUserJobInfo/{userId}")]
+    public IActionResult DeleteUserJobInfo(int userId)
+    {
+       UserJobInfo? DbUser = _entityFramework
+           .UserJobInfo
+           .Where(u => u.UserId == userId)
+           .FirstOrDefault<UserJobInfo>();
+
+        if (DbUser != null)
+        {
+            _userRepository.RemoveEntity<UserJobInfo>(DbUser);
+
+            if (_userRepository.SaveChanges())
+            {
+                return Ok();
+            }
+            throw new Exception("Failed to Delete UserJobInfo");
+        }
+
+        throw new Exception($"Failed get user job info by id'${userId}'");
+    }
+
+    // UserSalary
+    [HttpGet("GetSingleUserSalary/{userId}")]
+    public UserSalary GetSingleUserSalary(int userId)
+        {
+        UserSalary? user = _entityFramework
+        .UserSalary
+        .Where(u => u.UserId == userId)
+        .FirstOrDefault<UserSalary>();
+
+        if (user != null)
+        {
+            return user;
+        }
+
+        throw new Exception($"Failed get user salary by id'${userId}'");
+    }
+
+    [HttpPut("EditUserSalary")]
+    public IActionResult EditUserSalary(UserSalary user)
+    {
+        UserSalary? DbUser = _entityFramework
+           .UserSalary
+           .Where(u => u.UserId == user.UserId)
+           .FirstOrDefault<UserSalary>();
+
+        if (DbUser != null)
+        {
+            DbUser.Salary = user.Salary;
+
+            if (_userRepository.SaveChanges())
+            {
+                return Ok();
+            }
+            throw new Exception("Failed to Update UserSalary");
+        }
+
+        throw new Exception($"Failed get user salary by id'${user.UserId}'");
+    }
+
+    [HttpPost("AddUserSalary")]
+    public IActionResult AddUserSalary(UserToAddDto user)
+    {
+        UserSalary? DbUser = _mapper.Map<UserSalary>(user);
+
+        _userRepository.AddEntity<UserSalary>(DbUser);
+
+        if (_userRepository.SaveChanges())
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to Add UserSalary");
+    }
+
+    [HttpDelete("DeleteUserSalary/{userId}")]
+    public IActionResult DeleteUserSalary(int userId)
+    {
+       UserSalary? DbUser = _entityFramework
+           .UserSalary
+           .Where(u => u.UserId == userId)
+           .FirstOrDefault<UserSalary>();
+
+        if (DbUser != null)
+        {
+            _userRepository.RemoveEntity<UserSalary>(DbUser);
+
+            if (_userRepository.SaveChanges())
+            {
+                return Ok();
+            }
+            throw new Exception("Failed to Delete UserSalary");
+        }
+
+        throw new Exception($"Failed get user salary by id'${userId}'");
+    }
+
 }

@@ -12,9 +12,9 @@ namespace DotnetApi.Data
         }
 
 
-        public virtual DbSet<User> Users {get; set;}
-        public virtual DbSet<UserSalary> UserSalary {get; set;}
-        public virtual DbSet<UserJobInfo> UserJobInfo {get; set;}
+        public virtual DbSet<User> Users {get; set;} = null!;
+        public virtual DbSet<UserSalary> UserSalary {get; set;} = null!;
+        public virtual DbSet<UserJobInfo> UserJobInfo {get; set;} = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
