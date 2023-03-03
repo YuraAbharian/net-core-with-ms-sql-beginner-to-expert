@@ -25,7 +25,6 @@ namespace DotnetApi.Data
 
         public T LoadSingleData<T>(string query)
         {
-            Console.WriteLine("query: " + query);
             IDbConnection DbConnection = GetConnection();
             T user = DbConnection.QuerySingle<T>(query);
 

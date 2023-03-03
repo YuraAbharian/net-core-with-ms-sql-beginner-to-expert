@@ -56,7 +56,23 @@ public class AuthController : ControllerBase
 
                 if (_dapper.ExecuteSqlWithParameters(InsertAccountSql, sqlParameters))
                 {
-                    return Ok();
+                    string query = $@"
+            INSERT INTO TutorialAppSchema.Users (
+                [FirstName],
+                [LastName],
+                [Email],
+                [Gender],
+                [Active]
+           ) VALUES ('{userForRegistration.FirstName}', '{userForRegistration.LastName}', '{userForRegistration.Email}', '{userForRegistration.Gender}', 1)
+        ";
+
+                    bool result = _dapper.ExecuteSql(query);
+
+                    if (result)
+                    {
+                        return Ok();
+                    }
+                    throw new Exception("Failed to Register User");
                 }
 
                 throw new Exception($"Cannot register a user");
@@ -80,7 +96,7 @@ public class AuthController : ControllerBase
                 return StatusCode(401, "Incorrect password!");
             }
         }
-        
+
         return Ok();
     }
 
