@@ -35,15 +35,7 @@ public class AuthController : ControllerBase
                     randomNumber.GetNonZeroBytes(passwordSalt);
                 }
 
-                string passwordSaltPlusString = _config.GetSection("AppSettings:PasswordKey").Value + Convert.ToBase64String(passwordSalt);
-
-                byte[] passwordHash = KeyDerivation.Pbkdf2(
-                password: userForRegistration.Password,
-                salt: Encoding.ASCII.GetBytes(passwordSaltPlusString),
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 1000000,
-                numBytesRequested: 256 / 8
-            );
+                byte[] passwordHash = HashPassword(userForRegistration.Password, passwordSalt);
 
                 string InsertAccountSql = @"
                         INSERT INTO TutorialAppSchema.Auth  ([Email],
@@ -51,21 +43,21 @@ public class AuthController : ControllerBase
                         [PasswordSalt]) VALUES ('" + userForRegistration.Email +
                         "', @PasswordHash, @PasswordSalt)";
 
-                    List<SqlParameter> sqlParameters = new List<SqlParameter>();
+                List<SqlParameter> sqlParameters = new List<SqlParameter>();
 
-                    SqlParameter passwordSaltParameter = new SqlParameter("@PasswordSalt", SqlDbType.VarBinary);
-                    passwordSaltParameter.Value = passwordSalt;
+                SqlParameter passwordSaltParameter = new SqlParameter("@PasswordSalt", SqlDbType.VarBinary);
+                passwordSaltParameter.Value = passwordSalt;
 
-                    SqlParameter passwordHashParameter = new SqlParameter("@PasswordHash", SqlDbType.VarBinary);
-                    passwordHashParameter.Value = passwordHash;
+                SqlParameter passwordHashParameter = new SqlParameter("@PasswordHash", SqlDbType.VarBinary);
+                passwordHashParameter.Value = passwordHash;
 
-                    sqlParameters.Add(passwordSaltParameter);
-                    sqlParameters.Add(passwordHashParameter);
+                sqlParameters.Add(passwordSaltParameter);
+                sqlParameters.Add(passwordHashParameter);
 
-                    if (_dapper.ExecuteSqlWithParameters(InsertAccountSql, sqlParameters))
-                    {
-                        return Ok();
-                    }
+                if (_dapper.ExecuteSqlWithParameters(InsertAccountSql, sqlParameters))
+                {
+                    return Ok();
+                }
 
                 throw new Exception($"Cannot register a user");
             }
@@ -75,8 +67,34 @@ public class AuthController : ControllerBase
         throw new Exception("Password are not the same");
     }
     [HttpPost("Login")]
-    public IActionResult Login(UserForLoginDto uerForLoginDto)
+    public IActionResult Login(UserForLoginDto userForLoginDto)
     {
+        string getUserByEmaiSql = $"SELECT * FROM TutorialAppSchema.Auth WHERE Email = '{userForLoginDto.Email}'";
+        UserForLoginConfirmationDto userAuthData = _dapper.LoadSingleData<UserForLoginConfirmationDto>(getUserByEmaiSql);
+        byte[] passwordHash = HashPassword(userForLoginDto.Password, userAuthData.PasswordSalt);
+
+        for (int i = 0; i < passwordHash.Length; i++)
+        {
+            if (passwordHash[i] != userAuthData.PasswordHash[i])
+            {
+                return StatusCode(401, "Incorrect password!");
+            }
+        }
+        
         return Ok();
+    }
+
+    private byte[] HashPassword(string password, byte[] passwordSalt)
+    {
+        string passwordSaltPlusString = _config.GetSection("AppSettings:PasswordKey")
+        .Value + Convert.ToBase64String(passwordSalt);
+
+        return KeyDerivation.Pbkdf2(
+            password: password,
+            salt: Encoding.ASCII.GetBytes(passwordSaltPlusString),
+            prf: KeyDerivationPrf.HMACSHA256,
+            iterationCount: 1000000,
+            numBytesRequested: 256 / 8
+        );
     }
 }

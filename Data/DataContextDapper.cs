@@ -55,7 +55,7 @@ namespace DotnetApi.Data
                 commandWithParams.Parameters.Add(parameter);
             }
 
-            SqlConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            SqlConnection dbConnection = new SqlConnection(_config.GetConnectionString("Default"));
             dbConnection.Open();
 
             commandWithParams.Connection = dbConnection;
