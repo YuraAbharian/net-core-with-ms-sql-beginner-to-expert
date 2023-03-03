@@ -124,7 +124,7 @@ public class UserEFController : ControllerBase
     }
 
     [HttpPut("EditUserJobInfo")]
-    public IActionResult EditUserJobInfo(UserJobInfo user)
+    public IActionResult EditUserJobInfo(UserJobInfoToAddDto user)
     {
         UserJobInfo? DbUser = _entityFramework
            .UserJobInfo
@@ -147,7 +147,7 @@ public class UserEFController : ControllerBase
     }
 
     [HttpPost("AddUserJobInfo")]
-    public IActionResult AddUserJobInfo(UserToAddDto user)
+    public IActionResult AddUserJobInfo(UserJobInfoToAddDto user)
     {
         User? DbUser = _mapper.Map<User>(user);
 
@@ -200,7 +200,7 @@ public class UserEFController : ControllerBase
     }
 
     [HttpPut("EditUserSalary")]
-    public IActionResult EditUserSalary(UserSalary user)
+    public IActionResult EditUserSalary(UserSalaryToAddDto user)
     {
         UserSalary? DbUser = _entityFramework
            .UserSalary
@@ -222,7 +222,7 @@ public class UserEFController : ControllerBase
     }
 
     [HttpPost("AddUserSalary")]
-    public IActionResult AddUserSalary(UserToAddDto user)
+    public IActionResult AddUserSalary(UserSalaryToAddDto user)
     {
         UserSalary? DbUser = _mapper.Map<UserSalary>(user);
 
